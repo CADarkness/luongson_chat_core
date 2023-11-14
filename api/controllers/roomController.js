@@ -458,8 +458,8 @@ async function createPrivateRoomWithBufa(req, res) {
         const privateKeyA = `${req.userId}-${userWithBufa._id.toString()}`
         const privateKeyB = `${userWithBufa._id.toString()}-${req.userId}`
 
-        const findRoomByPrivateKeyA = await Rooms.findOne({ key: privateKeyA }).populate({ path: "user" })
-        const findRoomByPrivateKeyB = await Rooms.findOne({ key: privateKeyB }).populate({ path: "user" })
+        const findRoomByPrivateKeyA = await Rooms.findOne({ key: privateKeyA }).populate({ path: "roomUsers" })
+        const findRoomByPrivateKeyB = await Rooms.findOne({ key: privateKeyB }).populate({ path: "roomUsers" })
 
         if (!findRoomByPrivateKeyA && !findRoomByPrivateKeyB) {
             const newRoom = await Rooms.create({
@@ -473,7 +473,7 @@ async function createPrivateRoomWithBufa(req, res) {
             const roomUserB = await RoomUsers.create({ user: userWithBufa._id, room: newRoom._id })
             newRoom.roomUsers = [roomUserA._id, roomUserB._id]
             await newRoom.save()
-            await newRoom.populate({ path: "user" })
+            await newRoom.populate({ path: "roomUsers" })
             return res.status(200).json(new ResponseModel(200, "Tạo thành công", newRoom))
         } else {
             return res.status(200).json(new ResponseModel(200, "Không thể tạo vì bạn đã kết nối với người dùng này", findRoomByPrivateKeyA ?? findRoomByPrivateKeyB))
