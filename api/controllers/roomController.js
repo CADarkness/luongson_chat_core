@@ -229,11 +229,11 @@ async function getAllRoom(req, res) {
                 .find(searchObj)
                 .populate({
                     path: 'roomUsers lastMessage',
-                    select: 'user isDeleted username message type createdBy createdTime lastModified',
+                    select: 'user',
                 }).populate({
                     path: 'roomOwner',
                     select: '-password -rooms'
-                })
+                }).populate({ path: 'lastMessage', populate: { path: 'createdBy', select: 'username avatar fullName' } })
                 .sort({
                     createdTime: 'desc'
                 })
