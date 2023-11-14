@@ -454,7 +454,7 @@ async function findPrivateRoom(req, res) {
 async function createPrivateRoomWithBufa(req, res) {
     try {
         const userWithBufa = await Users.findOne({ bufa: req.body.bufa })
-        if (userWithBufa) return res.status(200).json(new ResponseModel(HTTP_CODES.NOT_FOUND, "Mã bufa không hợp lệ", null))
+        if (!userWithBufa) return res.status(200).json(new ResponseModel(HTTP_CODES.NOT_FOUND, "Mã bufa không hợp lệ", null))
         const privateKeyA = `${req.userId}-${userWithBufa._id.toString()}`
         const privateKeyB = `${userWithBufa._id.toString()}-${req.userId}`
 
